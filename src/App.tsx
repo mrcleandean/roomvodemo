@@ -238,7 +238,7 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
                   {...bind()} style={{ display, x }}
                 >
                   <animated.div
-                    className='touch-none bg-cover bg-no-repeat bg-center w-full h-full will-change-transform contain-paint shadow-xl shadow-gray-700'
+                    className='relative touch-none bg-cover bg-no-repeat bg-center w-full h-full will-change-transform contain-paint shadow-xl shadow-gray-700'
                     style={{ scale, borderRadius, backgroundImage: `url(${rooms[i].src})`, filter: filter.to(filter => `blur(${filter}px)`) }}
                   >
                     <animated.div
@@ -248,7 +248,7 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
                       <div className="absolute opacity-45 hover:opacity-75 bg-black transition-all inset-0"></div>
                     </animated.div>
                     <animated.div
-                      className="absolute top-2 right-2 overflow-auto cursor-pointer rounded-full flex justify-center items-center w-20 h-20 z-[5] -translate-x-1/2 -translate-y-1/2"
+                      className="absolute left-2 bottom-2 overflow-auto cursor-pointer rounded-full flex justify-center z-[5] items-center w-20 h-20 -translate-x-1/2 -translate-y-1/2"
                       style={{ filter: filter.to(filter => `blur(${filter}px)`), scale: deleteScale }}
                       onClick={() => deleteRoom(i)}
                     >

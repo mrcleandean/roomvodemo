@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
 import Button from "./Button";
-import { Check, HouseSimple, Pause, ShareNetwork } from "@phosphor-icons/react";
-import ExitButton from "./ExitButton";
+import { Check, HouseSimple, Pause, ShareNetwork, SignOut } from "@phosphor-icons/react";
 import { Room } from "../App";
 
 type ButtonPanelProps = {
@@ -24,9 +23,13 @@ const ButtonPanel: FC<ButtonPanelProps> = ({ viewing, toggleView, rooms, current
                     />
                 ) : (
                     <>
-                        <ExitButton />
                         <Button
-                            onClick={toggleView}
+                            onClick={() => console.log('exit')}
+                            text="EXIT"
+                            Symbol={SignOut}
+                        />
+                        <Button
+                            onClick={() => console.log('change room')}
                             text="CHANGE ROOM"
                             Symbol={HouseSimple}
                         />
