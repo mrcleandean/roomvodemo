@@ -12,6 +12,7 @@ import { BLUR_FACTOR, SCALED_R, SCALE_FACTOR, SNAP_DIVISOR } from "./templates/c
 import { FaHeart } from "react-icons/fa";
 import AddButton from "./components/AddButton";
 import Descriptors from "./components/Descriptors";
+import { pages } from "./templates/pages";
 
 export type Room = {
   src: string;
@@ -41,6 +42,7 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
   const [ref, { width, height }] = useMeasure();
   const index = useRef(0);
   const prev = useRef(0);
+  const noEnvCircle = useRef(3); // this would be removed, it's only for the demo
   const SCALED_WIDTH = width * SCALE_FACTOR;
   const SCALED_MARGIN_X = (width - SCALED_WIDTH) * 0.5;
   const SCALED_MARGIN_Y = (height * (1 - SCALE_FACTOR)) * 0.5;
@@ -154,22 +156,26 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
 
   const getImage = useDebouncedCallback(async () => {
     if (pending) return;
+    const loader = new Image();
     try {
       setPending(true);
-
-      const { data: img } = await axios.get('https://api.unsplash.com/photos/random/?client_id=2h2HdGP-9eokfYQAPi27xZuboofgBecBufOPzZwTneM') as { data: Img };
+      const { data: img } = await axios.get(`https://api.unsplash.com/photos/random/?client_id=${import.meta.env.VITE_UPSPLASH_ACCESS_KEY}`) as { data: Img };
       const newRoom: Room = {
-        src: img.urls.full, title: img.user.username,
-        floor: img.location.country || 'No Location', wall: img.user.name,
+        src: img.urls.full, title: img.user.username || 'No Username',
+        floor: img.location.country || 'No Location',
+        wall: img.user.name || 'No Name',
         favourited: false
       }
 
-      const loader = new Image();
-      loader.src = newRoom.src;
       loader.onload = () => {
         addRoom(newRoom);
       };
+      loader.src = newRoom.src;
     } catch (error) {
+      loader.onload = () => {
+        addRoom(pages[noEnvCircle.current % pages.length]);
+      }
+      loader.src = pages[noEnvCircle.current++ % pages.length].src; // filler image if no .env is supplied
       if (error instanceof AxiosError && error.response?.data?.message) {
         console.log(error.response.data.message);
       } else {
@@ -213,7 +219,7 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
         {props.length === 0 ? (
           <div className="w-screen h-screen flex justify-center items-center">
             <div className="flex flex-col gap-2 font-inter">
-              <h1>No rooms yet</h1>
+              <h1>No views yet</h1>
               <AddButton pending={pending} callback={getImage} />
             </div>
           </div>

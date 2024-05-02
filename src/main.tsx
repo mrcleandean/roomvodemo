@@ -6,6 +6,7 @@ import { pages } from './templates/pages.ts'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App initialRooms={pages} />
+    {/* actual user data would be passed in here */}
+    <App initialRooms={pages.slice(0, 2)} />
   </React.StrictMode>,
 )
