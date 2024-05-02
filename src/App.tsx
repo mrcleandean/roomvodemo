@@ -238,7 +238,7 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
                   {...bind()} style={{ display, x }}
                 >
                   <animated.div
-                    className='relative touch-none bg-cover bg-no-repeat bg-center w-full h-full will-change-transform contain-paint shadow-xl shadow-gray-700'
+                    className='touch-none bg-cover bg-no-repeat bg-center w-full h-full will-change-transform contain-paint shadow-xl shadow-gray-700'
                     style={{ scale, borderRadius, backgroundImage: `url(${rooms[i].src})`, filter: filter.to(filter => `blur(${filter}px)`) }}
                   >
                     <animated.div
