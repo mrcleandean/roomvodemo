@@ -8,7 +8,7 @@ import Button from './components/Button';
 import { Copy, Heart, ShareNetwork, X } from '@phosphor-icons/react';
 import axios, { AxiosError } from "axios";
 import { useDebouncedCallback } from "use-debounce";
-import { BLUR_FACTOR, SCALED_R, SCALE_FACTOR, SNAP_DIVISOR } from "./templates/constants";
+import { BLUR_FACTOR, LAP_FACTOR, SCALED_R, SCALE_FACTOR, SNAP_DIVISOR } from "./templates/constants";
 import { FaHeart } from "react-icons/fa";
 import AddButton from "./components/AddButton";
 import Descriptors from "./components/Descriptors";
@@ -46,7 +46,6 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
   const SCALED_WIDTH = width * SCALE_FACTOR;
   const SCALED_MARGIN_X = (width - SCALED_WIDTH) * 0.5;
   const SCALED_MARGIN_Y = (height * (1 - SCALE_FACTOR)) * 0.5;
-  const LAP_FACTOR = 1.5;
 
   const setToInitial = (i: number) => {
     const iOffset = i - index.current;
