@@ -5,7 +5,7 @@ import clamp from 'lodash.clamp';
 import { useEffect, useRef, useState } from "react";
 import ButtonPanel from './components/ButtonPanel';
 import Button from './components/Button';
-import { CircleNotch, Copy, Heart, Plus, ShareNetwork, X } from '@phosphor-icons/react';
+import { Copy, Heart, ShareNetwork, X } from '@phosphor-icons/react';
 import axios, { AxiosError } from "axios";
 import { useDebouncedCallback } from "use-debounce";
 import { BLUR_FACTOR, SCALED_R, SCALE_FACTOR, SNAP_DIVISOR } from "./templates/constants";

@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import Button from "./Button";
-import { Check, HouseSimple, Pause, ShareNetwork, SignOut } from "@phosphor-icons/react";
+import { Check, HouseSimple, Pause, ShareNetwork } from "@phosphor-icons/react";
 import ExitButton from "./ExitButton";
 import { Room } from "../App";
 
