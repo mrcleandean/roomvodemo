@@ -10,13 +10,15 @@ import axios, { AxiosError } from "axios";
 import { useDebouncedCallback } from "use-debounce";
 import { BLUR_FACTOR, SCALED_R, SCALE_FACTOR, SNAP_DIVISOR } from "./templates/constants";
 import { FaHeart } from "react-icons/fa";
+import AddButton from "./components/AddButton";
+import Descriptors from "./components/Descriptors";
 
 export type Room = {
   src: string;
   title: string;
   floor: string;
   wall: string;
-  favourited?: boolean;
+  favourited: boolean;
 }
 type Img = {
   description: string;
@@ -45,78 +47,101 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
   const LAP_FACTOR = 1.5;
 
   const setToInitial = (i: number) => {
-    setViewing(false);
     const iOffset = i - index.current;
     return {
       x: window.innerWidth * iOffset,
       scale: 1,
       borderRadius: 0,
       display: Math.abs(iOffset) > 2 ? 'none' : 'block',
-      filter: 'blur(0)',
+      filter: 0,
       panelOpacity: iOffset === 0 ? 1 : 0,
       favouriteScale: rooms[i].favourited ? SCALE_FACTOR : 0,
-      deleteScale: 0
+      deleteScale: 0,
     }
-  }
-  const zoomOut = (i: number) => {
-    const iOffset = i - index.current;
+  } // anim func
+
+  const zoomedDefault = (i: number, prev?: number) => {
+    const iOffset = i - (prev ?? index.current)
     return {
       x: iOffset * (window.innerWidth - SCALED_MARGIN_X * LAP_FACTOR),
       scale: SCALE_FACTOR,
       borderRadius: SCALED_R,
+      display: Math.abs(iOffset) > 2 ? 'none' : 'block',
+      filter: 0,
       panelOpacity: iOffset === 0 ? 1 : 0,
       favouriteScale: rooms[i].favourited ? SCALE_FACTOR : 0,
       deleteScale: SCALE_FACTOR
     }
-  }
-
-  const scaleUpNew = (i: number) => {
-    const iOffset = i - index.current;
-    return {
-      from: {
-        ...zoomOut(i),
-        scale: iOffset === 0 ? 0 : SCALE_FACTOR,
-      },
-      to: {
-        scale: SCALE_FACTOR,
-      },
-    }
-  }
+  } // anim func
 
   const animateSlide = (i: number) => {
     const iOffset = i - index.current;
-
     return {
-      x: iOffset * (window.innerWidth - SCALED_MARGIN_X * LAP_FACTOR),
-      display: i >= prev.current - 1 ? 'block' : 'none',
-      panelOpacity: iOffset === 0 ? 1 : 0,
-      filter: 'blur(0)',
-      scale: SCALE_FACTOR
+      from: {
+        ...zoomedDefault(i, prev.current),
+        scale: iOffset === 0 ? 0 : SCALE_FACTOR,
+        panelOpacity: 0,
+        display: i >= prev.current - 1 ? 'block' : 'none', // important for sliding animation
+      },
+      to: async (next: any) => {
+        await next({
+          x: iOffset * (window.innerWidth - SCALED_MARGIN_X * LAP_FACTOR),
+          scale: (iOffset !== 0 || prev.current >= index.current) ? SCALE_FACTOR : 0,
+          borderRadius: SCALED_R,
+          display: i >= prev.current - 1 ? 'block' : 'none',
+          filter: prev.current >= index.current ? 0 : BLUR_FACTOR,
+          panelOpacity: 0,
+          favouriteScale: rooms[i].favourited ? SCALE_FACTOR : 0,
+          deleteScale: SCALE_FACTOR,
+        })
+        await next({
+          scale: SCALE_FACTOR,
+          panelOpacity: iOffset === 0 ? 1 : 0,
+          filter: 0,
+          display: Math.abs(iOffset) > 2 ? 'none' : 'block',
+        })
+      }
     }
-  }
+  } // anim func
 
-  const updateFavourites = (i: number) => ({ favouriteScale: viewing && rooms[i].favourited ? SCALE_FACTOR : 0 });
+  const updateFavourites = (i: number) => {
+    return {
+      favouriteScale: viewing && rooms[i].favourited ? SCALE_FACTOR : 0
+    }
+  } // anim func
 
   const animateDrag = (i: number, active: boolean, mx: number, distance: number) => {
     const iOffset = i - index.current;
     const dragOffset = active ? mx : 0;
     const xOffset = (width - SCALED_MARGIN_X * LAP_FACTOR);
     const x = iOffset * xOffset + dragOffset;
-
-    if (Math.abs(iOffset) > 2) return ({ display: 'none', x }); // we preserve x here to prevent image ripping if animateSlide() is large
+    if (Math.abs(iOffset) > 2) return ({ display: 'none', x }); // important: we preserve x here to prevent image ripping if animateSlide() is large
 
     const scale = active ? SCALE_FACTOR - distance / width / SNAP_DIVISOR : SCALE_FACTOR;
     const blur = active ? BLUR_FACTOR - (distance / width) * SNAP_DIVISOR : 0;
+
     const panelOpacity = active && iOffset === 0 ? 1 - (distance / width) * SNAP_DIVISOR : iOffset === 0 ? 1 : 0;
     return {
       x,
       scale,
-      filter: `blur(${blur}px)`,
+      filter: blur,
       display: 'block',
       panelOpacity
     }
-  }
+  } // anim func
 
+  const deleteRoom = (i: number) => {
+    const newRooms = rooms.filter((_, j) => i !== j);
+    setRooms(newRooms);
+    prev.current = clamp(index.current, 0, newRooms.length - 1); // prevents out of bounds
+    index.current = clamp(i, 0, newRooms.length - 1);
+  } // triggers dependency in useSprings, animateSlide runs
+
+  const addRoom = (room: Room) => {
+    setRooms(prev => [...prev, room]);
+    prev.current = index.current;
+    index.current = rooms.length;
+  } // triggers dependency in useSprings, animateSlide runs
 
   const bind = useDrag(({ active, movement: [mx], direction: [xDir], distance, cancel }) => {
     if (!viewing) return;
@@ -127,24 +152,6 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
     api.start(i => animateDrag(i, active, mx, distance));
   })
 
-  const [props, api] = useSprings(rooms.length, i => {
-    if (rooms.length !== 1) {
-      return scaleUpNew(i);
-    } else {
-      return setToInitial(i);
-    }
-  }, [width])
-
-
-  useEffect(() => {
-    api.start(i => ({ ...updateFavourites(i), ...animateSlide(i) }));
-  }, [rooms]);
-
-  useEffect(() => {
-    if (viewing) api.start(i => ({ ...zoomOut(i), ...updateFavourites(i) }));
-    else api.start(i => ({ ...setToInitial(i), ...updateFavourites(i) }));
-  }, [viewing]);
-
   const getImage = useDebouncedCallback(async () => {
     if (pending) return;
     try {
@@ -152,23 +159,16 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
 
       const { data: img } = await axios.get('https://api.unsplash.com/photos/random/?client_id=2h2HdGP-9eokfYQAPi27xZuboofgBecBufOPzZwTneM') as { data: Img };
       const newRoom: Room = {
-        src: img.urls.full,
-        title: img.user.username,
-        floor: img.location.country || 'No Location',
-        wall: img.user.name
+        src: img.urls.full, title: img.user.username,
+        floor: img.location.country || 'No Location', wall: img.user.name,
+        favourited: false
       }
 
       const loader = new Image();
-      loader.onload = () => {
-        setTimeout(() => {
-          const newRooms = [...rooms, newRoom];
-          setRooms(newRooms);
-          prev.current = index.current;
-          index.current = newRooms.length - 1;
-          setPending(false);
-        }, 600); // Additional time prevents lag when scaling up image during animation triggered in useEffect
-      };
       loader.src = newRoom.src;
+      loader.onload = () => {
+        addRoom(newRoom);
+      };
     } catch (error) {
       if (error instanceof AxiosError && error.response?.data?.message) {
         console.log(error.response.data.message);
@@ -180,21 +180,35 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
     }
   }, 300);
 
-  const deleteRoom = (i: number) => {
-    const newRooms = rooms.filter((_, j) => i !== j);
-    setRooms(newRooms);
-    prev.current = index.current;
-    index.current = clamp(index.current, 0, newRooms.length - 1);
-  }
+  useEffect(() => {
+    if (viewing) api.start(i => ({ ...zoomedDefault(i), ...updateFavourites(i) }));
+    else api.start(i => ({ ...setToInitial(i), ...updateFavourites(i) }));
+  }, [viewing]);
+
+  useEffect(() => {
+    if (rooms.length === 0) {
+      setViewing(false);
+    }
+  }, [rooms.length]);
+
+  useEffect(() => {
+    if (viewing && rooms.length === 0) { // setToInitial runs in useSprings here
+      setViewing(false);
+      return;
+    }
+    api.start(i => updateFavourites(i));
+  }, [rooms]);
+
+  const [props, api] = useSprings(
+    rooms.length,
+    i => viewing && rooms.length !== 0 ? {
+      ...animateSlide(i) // animateSlide only animates if index changes from addRoom or deleteRoom functions
+    } : viewing ? zoomedDefault(i) : setToInitial(i),
+    [width, rooms.length] // we need rooms here, without it only last element animates on room.length change
+  )
 
   return (
     <div ref={ref} className="relative h-screen w-screen bg-gradient-to-r from-[#464C51] to-[#505860]">
-      <ButtonPanel
-        viewing={viewing}
-        toggleView={() => setViewing(prev => !prev)}
-        rooms={rooms}
-        current={index.current}
-      />
       <div>
         {props.length === 0 ? (
           <div className="w-screen h-screen flex justify-center items-center">
@@ -205,6 +219,12 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
           </div>
         ) : (
           <>
+            <ButtonPanel
+              viewing={viewing}
+              toggleView={() => setViewing(prev => !prev)}
+              rooms={rooms}
+              current={index.current}
+            />
             {props.map(({ x, display, scale, borderRadius, filter, panelOpacity, favouriteScale, deleteScale }, i) => (
               <div key={i}>
                 <animated.div
@@ -213,21 +233,21 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
                 >
                   <animated.div
                     className='touch-none bg-cover bg-no-repeat bg-center w-full h-full will-change-transform contain-paint shadow-xl shadow-gray-700'
-                    style={{ scale, borderRadius, backgroundImage: `url(${rooms[i].src})`, filter }}
+                    style={{ scale, borderRadius, backgroundImage: `url(${rooms[i].src})`, filter: filter.to(filter => `blur(${filter}px)`) }}
                   >
                     <animated.div
                       className='absolute top-2 left-2 overflow-auto cursor-pointer will-change-transform rounded-full flex justify-center items-center w-20 h-20 z-[2] -translate-x-1/2 -translate-y-1/2'
-                      style={{ scale: favouriteScale, filter }}>
+                      style={{ scale: favouriteScale, filter: filter.to(filter => `blur(${filter}px)`) }}>
                       <FaHeart size={50} color="pink" className="z-[1] pointer-events-none translate-y-0.5" />
                       <div className="absolute opacity-45 hover:opacity-75 bg-black transition-all inset-0"></div>
                     </animated.div>
                     <animated.div
                       className="absolute top-2 right-2 overflow-auto cursor-pointer rounded-full flex justify-center items-center w-20 h-20 z-[5] -translate-x-1/2 -translate-y-1/2"
-                      style={{ filter, scale: deleteScale }}
+                      style={{ filter: filter.to(filter => `blur(${filter}px)`), scale: deleteScale }}
                       onClick={() => deleteRoom(i)}
                     >
                       <X size={50} color="white" className="z-[1] pointer-events-none translate-y-0.5" />
-                      <div className="absolute opacity-45 hover:opacity-75 bg-black transition-all inset-0"></div>
+                      <div className="absolute opacity-45 hover:opacity-75 bg-black transition-all inset-0" />
                     </animated.div>
                   </animated.div>
                 </animated.div>
@@ -241,20 +261,14 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
                     opacity: panelOpacity
                   }}
                 >
-                  <div className='h-full box-border px-5 py-2 flex justify-between items-center font-inter' style={{ width: SCALED_WIDTH }}>
-                    <div>
-                      <h3 className='text-[12px] leading-[20px] font-bold tracking-[0.5px]'>{rooms[i].title}</h3>
-                      <div className='flex gap-[35px]'>
-                        <p className='font-medium text-[12px] leading-[20px] tracking-[0.5px]'>{rooms[i].floor}</p>
-                        <p className='font-medium text-[12px] leading-[20px] tracking-[0.5px]'>{rooms[i].wall}</p>
-                      </div>
-                    </div>
+                  <div className='h-full box-border px-5 py-2 flex flex-col md:flex-row justify-center gap-0.5 md:gap-0 md:justify-between items-center font-inter' style={{ width: SCALED_WIDTH }}>
+                    <Descriptors title={rooms[i].title} floor={rooms[i].floor} wall={rooms[i].wall} />
                     <div className='flex justify-center gap-2'>
                       <Button
                         onClick={() => {
                           navigator.clipboard.writeText(rooms[i].src);
                           setCopied(true);
-                          setTimeout(() => setCopied(false), 1500);
+                          setTimeout(() => setCopied(false), 1500); // TODO: add unmount cleanup
                         }}
                         text={copied ? 'COPIED' : 'SHARE'}
                         Symbol={ShareNetwork}
@@ -265,11 +279,7 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
                         Symbol={Heart}
                       />
                       <Button
-                        onClick={() => {
-                          setRooms(prev => [...prev, rooms[i]]);
-                          prev.current = index.current;
-                          index.current = rooms.length;
-                        }}
+                        onClick={() => addRoom(rooms[i])}
                         text='DUPLICATE'
                         Symbol={Copy}
                       />
@@ -289,27 +299,6 @@ const App = ({ initialRooms }: { initialRooms?: Room[] }) => {
           </>
         )}
       </div>
-    </div>
-  )
-}
-
-const AddButton = ({ pending, callback }: { pending: boolean, callback: () => void }) => {
-  return (
-    <div className='flex justify-center items-center w-full h-full'>
-      {pending ? (
-        <CircleNotch
-          size={55}
-          color='#818C98'
-          className="animate-spin"
-        />
-      ) : (
-        <Plus
-          size={55}
-          color='#818C98'
-          className="bg-transparent hover:bg-[#D1D4DE] cursor-pointer transition-all rounded-full opacity-35"
-          onClick={callback}
-        />
-      )}
     </div>
   )
 }

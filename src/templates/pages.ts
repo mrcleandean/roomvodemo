@@ -5,11 +5,13 @@ export const pages = [
         src: img1,
         title: 'Living Room',
         floor: 'Dark forest hardwood',
-        wall: "Pearl white"
+        wall: "Pearl white",
+        favourited: false
     }, {
         src: img2,
         title: 'Cozy Bedroom',
         floor: 'Hawk maple hardwood',
-        wall: 'Deep night blue'
+        wall: 'Deep night blue',
+        favourited: false
     }
 ]

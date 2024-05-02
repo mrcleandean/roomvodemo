@@ -39,7 +39,7 @@ const ButtonPanel: FC<ButtonPanelProps> = ({ viewing, toggleView, rooms, current
                             onClick={() => {
                                 navigator.clipboard.writeText(rooms[current].src);
                                 setCopied(true);
-                                setTimeout(() => setCopied(false), 1500);
+                                setTimeout(() => setCopied(false), 1500); // TODO: Add unmount cleanup
                             }}
                             text={copied ? 'COPIED' : 'SHARE'}
                             Symbol={ShareNetwork}
