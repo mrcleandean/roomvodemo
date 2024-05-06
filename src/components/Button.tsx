@@ -1,27 +1,33 @@
-import { Icon } from "@phosphor-icons/react";
-import { FC } from "react";
+import { type Icon } from "@phosphor-icons/react";
+import { type FC } from "react";
+import { cn } from "../lib/utils";
+import { motion } from 'framer-motion';
+import { SPRING_OPTIONS } from "@/constants";
 
-type ButtonProps = {
-  onClick: () => void;
+export type ButtonProps = {
+  icon?: Icon;
   text: string;
-  Symbol?: Icon;
-};
+  onClick: () => void;
+  className?: string;
+}
 
-const Button: FC<ButtonProps> = ({ onClick, text, Symbol = null }) => {
+const Button: FC<ButtonProps> = ({ icon, text, onClick, className = '' }) => {
+  const Icon = icon;
   return (
-    <button
+    <motion.button
+      layout
       onClick={onClick}
-      className="relative h-[25px] md:h-[40px] rounded-[12px] py-[12px] px-[10px] md:py-[16px] md:px-[12px] overflow-hidden text-white hover:text-[#373C40] flex items-center gap-0.5 md:gap-2 transition-all duration-200 font-inter font-medium"
+      className={cn("relative h-[40px] rounded-[12px] py-[16px] px-[12px] overflow-hidden text-white hover:text-[#373C40] flex items-center gap-2 transition-all duration-200 font-inter font-medium", className)}
     >
-      {Symbol && (
-        <Symbol size={16} className="z-[1] font-medium pointer-events-none" />
+      {Icon && (
+        <Icon
+          size={16} className="z-[1] font-medium pointer-events-none"
+        />
       )}
-      <p className="z-[1] text-[7px] md:text-[12px] leading-[12px] md:leading-[20px] pointer-events-none">
-        {text}
-      </p>
+      <p className="z-[1] text-[12px] leading-[20px] pointer-events-none">{text}</p>
       <div className="z-0 absolute inset-0 opacity-35 hover:opacity-100 bg-black hover:bg-[#D1D4DE] transition-all duration-200" />
-    </button>
-  );
-};
+    </motion.button>
+  )
+}
 
 export default Button;

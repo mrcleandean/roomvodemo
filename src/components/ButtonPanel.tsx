@@ -1,57 +1,33 @@
-import { FC, useState } from "react";
-import Button from "./Button";
-import { Check, HouseSimple, Pause, ShareNetwork, SignOut } from "@phosphor-icons/react";
-import { Room } from "../App";
+import Button, { type ButtonProps } from "./Button"
+import { type FC } from "react"
+import { motion } from "framer-motion"
+import { SPRING_OPTIONS } from "../constants"
 
-type ButtonPanelProps = {
-    viewing: boolean;
-    toggleView: () => void;
-    rooms: Room[];
-    current: number;
-}
-
-const ButtonPanel: FC<ButtonPanelProps> = ({ viewing, toggleView, rooms, current }) => {
-    const [copied, setCopied] = useState(false);
+const ButtonPanel: FC<{ buttons: ButtonProps[] }> = ({ buttons }) => {
     return (
-        <div className="absolute z-[2] left-1/2 -translate-x-1/2 top-0 rounded-b-[16px] p-[8px] overflow-hidden">
-            <div className="relative z-[1] flex gap-2">
-                {viewing ? (
-                    <Button
-                        onClick={toggleView}
-                        text="DONE"
-                        Symbol={Check}
-                    />
-                ) : (
-                    <>
-                        <Button
-                            onClick={() => console.log('exit')}
-                            text="EXIT"
-                            Symbol={SignOut}
-                        />
-                        <Button
-                            onClick={() => console.log('change room')}
-                            text="CHANGE ROOM"
-                            Symbol={HouseSimple}
-                        />
-                        <Button
-                            onClick={toggleView}
-                            text="VIEWS"
-                            Symbol={Pause}
-                        />
-                        <Button
-                            onClick={() => {
-                                navigator.clipboard.writeText(rooms[current].src);
-                                setCopied(true);
-                                setTimeout(() => setCopied(false), 1500); // TODO: Add unmount cleanup
-                            }}
-                            text={copied ? 'COPIED' : 'SHARE'}
-                            Symbol={ShareNetwork}
-                        />
-                    </>
-                )}
-            </div>
-            <div className="absolute inset-0 z-0 opacity bg-[#303438] opacity-55" />
-        </div>
+        <div className="w-full flex justify-center absolute z-[2] scale-[.95] md:scale-100 origin-top">
+            <motion.div
+                layout
+                transition={{ type: 'spring', stiffness: 300, damping: 27, }}
+                className="relative rounded-b-[16px] p-[8px] overflow-hidden"
+            >
+                <motion.div
+                    layout="position"
+                    transition={SPRING_OPTIONS}
+                    className="relative z-[1] flex justify-center gap-2"
+                >
+                    {buttons.map((buttonProp, i) => {
+                        return (
+                            <Button
+                                key={i}
+                                {...buttonProp}
+                            />
+                        )
+                    })}
+                </motion.div>
+                <div className="absolute inset-0 z-0 opacity bg-[#303438] opacity-55" />
+            </motion.div>
+        </div >
     )
 }
 
