@@ -1,6 +1,6 @@
 # Random Images Support
 
-Clone/fork this repo and create a .env file with an Upsplash access key
+Clone/fork this repo and create a .env file with an Unsplash access key
 
 ```ini
 VITE_UNSPLASH_ACCESS_KEY='your_access_key'
