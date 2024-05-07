@@ -136,31 +136,25 @@ const View: FC<ViewProps> = ({ room, i }) => {
                             </div>
                         </motion.div>
                     </motion.div>
-
                     <AnimatePresence>
                         {i === rooms.length - 1 && viewing && (
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                exit={{ scale: 0 }}
-                                style={{ width: width * (1 - VIEW_SCALE) * (width <= 750 ? 1 : 0.5), pointerEvents: viewing ? 'auto' : 'none' }}
-                                className="absolute top-0 bottom-0 right-0 flex justify-center items-center z-[-1]"
+                            <div
+                                className="absolute right-0 top-0 bottom-0 flex justify-center items-center"
+                                style={{ width: width * (1 - VIEW_SCALE) * 0.5 }}
                             >
                                 <CircularButton
                                     icon={Plus}
                                     iconColor="white"
                                     onClick={() => console.log('test')}
-                                    className={`${width < 750 && '-translate-x-full'} absolute z-10`}
                                 />
-                            </motion.div>
+                            </div>
                         )}
                     </AnimatePresence>
-                </motion.div>
+                </motion.div >
             )}
-        </AnimatePresence>
+        </AnimatePresence >
     )
 }
-
 
 
 export default View;
