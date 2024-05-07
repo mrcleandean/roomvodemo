@@ -12,6 +12,8 @@ import { type Room } from './App';
 export const VIEW_SCALE = 0.8; // The scale of the image when in view mode
 export const DRAG_FACTOR = 4; // The fraction of the screen that must be dragged before an animation is triggered
 export const MAX_BLUR = 15; // Max px value to blur when dragging
+export const IMAGE_JUMP = 1.015; // The scale of the image when jumping to the next image
+export const ADD_MEDIA_Q = 767; // The breakpoint for the add button to shift left on the last image (small devices)
 export const COPY_TIMEOUT = 1750 // Time in ms we want to displayed copied text when pressing the share button
 export const SPRING_OPTIONS = { mass: 1, tension: 170, friction: 26 }; // Mimics react-springs default config
 

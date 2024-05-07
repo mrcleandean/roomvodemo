@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Room } from "../App";
 import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
-import { MAX_BLUR, SPRING_OPTIONS, VIEW_SCALE } from "../constants";
+import { ADD_MEDIA_Q, IMAGE_JUMP, MAX_BLUR, SPRING_OPTIONS, VIEW_SCALE } from "../constants";
 import CircularButton from "./CircularButton";
 import { Copy, Heart, ShareNetwork, X } from "@phosphor-icons/react";
 import Descriptors from "./Descriptors";
@@ -31,7 +31,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
         if (Math.abs(iOffset) > 2) return
         offsetControls.start(({
             x: viewingX,
-            scale: viewing ? [1, 1.015, 1] : 1
+            scale: viewing ? [1, IMAGE_JUMP, 1] : 1
         }));
         backdropControls.start({
             opacity: [0, 1, 0]
@@ -140,10 +140,10 @@ const View: FC<ViewProps> = ({ room, i }) => {
                     <AnimatePresence>
                         {i === rooms.length - 1 && viewing && (
                             <motion.div
-                                className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[1]"
-                                style={{ width: width * (1 - VIEW_SCALE) * 0.5, translateX: width <= 767 ? -width * (1 - VIEW_SCALE) * 0.25 : 0 }}
+                                className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[-1]"
+                                style={{ width: width * (1 - VIEW_SCALE) * 0.5, translateX: width <= ADD_MEDIA_Q ? -width * (1 - VIEW_SCALE) * 0.25 : 0 }}
                             >
-                                <AddButton className="absolute" />
+                                <AddButton className="absolute z-50" />
                             </motion.div>
                         )}
                     </AnimatePresence>
