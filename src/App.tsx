@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { PanInfo, motion, useMotionValue } from "framer-motion";
-import { Check, HouseSimple, Pause, Plus, ShareNetwork, SignOut } from "@phosphor-icons/react";
+import { Check, HouseSimple, Pause, ShareNetwork, SignOut } from "@phosphor-icons/react";
 import ButtonPanel from "./components/ButtonPanel";
 import { DRAG_FACTOR } from "./constants";
 import View from "./components/View";
@@ -9,7 +9,7 @@ import useRoomsContext from "./hooks/useRoomsContext";
 import clamp from "lodash.clamp";
 import { useToast } from "./hooks/useToast";
 import GradientEdges from "./components/GradientEdges";
-import CircularButton from "./components/CircularButton";
+import AddButton from "./components/AddButton";
 
 export type Room = {
   id: string;
@@ -18,20 +18,6 @@ export type Room = {
   floor: string;
   wall: string;
   favourited: boolean;
-};
-
-export type RandomImage = {
-  description: string;
-  user: {
-    username: string;
-    name: string;
-  };
-  location: {
-    country: string;
-  };
-  urls: {
-    full: string;
-  };
 };
 
 const App = () => {
@@ -106,11 +92,7 @@ const App = () => {
         <div className="absolute inset-0 flex justify-center items-center">
           <div className="flex flex-col gap-1 justify-center items-center">
             <h1 className="text-white text-center mt-8">No rooms yet</h1>
-            <CircularButton
-              icon={Plus}
-              iconColor="white"
-              onClick={() => console.log('test')}
-            />
+            <AddButton />
           </div>
         </div>
       )}

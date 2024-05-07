@@ -14,6 +14,8 @@ export const RoomsContext = createContext<{
     setHeight: Dispatch<SetStateAction<number>>;
     copied: boolean;
     setCopied: Dispatch<SetStateAction<boolean>>;
+    noEnvIndex: number;
+    setNoEnvIndex: Dispatch<SetStateAction<number>>;
 } | undefined>(undefined);
 
 const useRoomsContext = () => {

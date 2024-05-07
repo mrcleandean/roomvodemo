@@ -11,7 +11,7 @@ import useRoomsContext from "../hooks/useRoomsContext";
 import clamp from "lodash.clamp";
 import ButtonExpander from "./ButtonExpander";
 import ButtonStrip from "./ButtonStrip";
-import { Plus } from "@phosphor-icons/react";
+import AddButton from "./AddButton";
 
 export type ViewProps = {
     room: Room;
@@ -136,20 +136,14 @@ const View: FC<ViewProps> = ({ room, i }) => {
                             </div>
                         </motion.div>
                     </motion.div>
-                    <AnimatePresence>
-                        {i === rooms.length - 1 && viewing && (
-                            <div
-                                className="absolute right-0 top-0 bottom-0 flex justify-center items-center"
-                                style={{ width: width * (1 - VIEW_SCALE) * 0.5 }}
-                            >
-                                <CircularButton
-                                    icon={Plus}
-                                    iconColor="white"
-                                    onClick={() => console.log('test')}
-                                />
-                            </div>
-                        )}
-                    </AnimatePresence>
+                    {i === rooms.length - 1 && viewing && (
+                        <div
+                            className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[1]"
+                            style={{ width: width * (1 - VIEW_SCALE) * 0.5 }}
+                        >
+                            <AddButton />
+                        </div>
+                    )}
                 </motion.div >
             )}
         </AnimatePresence >

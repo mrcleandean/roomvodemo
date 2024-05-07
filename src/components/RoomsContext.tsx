@@ -11,6 +11,7 @@ const RoomsContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [height, setHeight] = useState<number>(window.innerHeight);
     const [copied, setCopied] = useState<boolean>(false);
+    const [noEnvIndex, setNoEnvIndex] = useState<number>(0);
     useEffect(() => {
         navigator.clipboard.writeText(rooms[imgIndex].src);
         const timeoutId = setTimeout(() => {
@@ -22,7 +23,7 @@ const RoomsContextProvider = ({ children }: { children: React.ReactNode }) => {
         <RoomsContext.Provider value={{
             rooms, setRooms, viewing, setViewing, imgIndex,
             setImgIndex, width, setWidth, height, setHeight,
-            copied, setCopied
+            copied, setCopied, noEnvIndex, setNoEnvIndex
         }}>
             {children}
         </RoomsContext.Provider>

@@ -26,7 +26,7 @@ const CircularButton: FC<CircularButtonProps> = ({ onClick, icon, iconColor, cla
             {pending ? (
                 <CircleNotch
                     size={55}
-                    color='#818C98'
+                    color={iconColor}
                     className="animate-spin"
                 />
             ) : (
