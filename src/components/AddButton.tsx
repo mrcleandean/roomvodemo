@@ -56,7 +56,7 @@ const AddButton = () => {
             };
             loader.src = pages[noEnvIndex % pages.length].src; // filler image if no .env is supplied
             if (error instanceof AxiosError && error?.message) {
-                console.log('Error likely due to unprovided Unsplash', error.message);
+                console.log('Error likely due to invalid Unsplash env variable - ', error.message);
             } else {
                 console.log(error);
             }
