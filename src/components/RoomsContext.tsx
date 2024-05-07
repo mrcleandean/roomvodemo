@@ -13,6 +13,7 @@ const RoomsContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [copied, setCopied] = useState<boolean>(false);
     const [noEnvIndex, setNoEnvIndex] = useState<number>(0);
     useEffect(() => {
+        if (!copied) return; // prevents errors on inital render and prevents reruns on timeout
         navigator.clipboard.writeText(rooms[imgIndex].src);
         const timeoutId = setTimeout(() => {
             setCopied(false);
