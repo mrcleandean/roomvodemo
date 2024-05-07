@@ -62,8 +62,8 @@ const App = () => {
             ]
           ) : (
             [
-              { icon: SignOut, text: "EXIT", onClick: () => toast({ title: 'No exit functionality yet.', description: 'For demonstrative purposes only', variant: 'destructive' }) },
-              { icon: HouseSimple, text: "CHANGE ROOM", onClick: () => toast({ title: 'No change room functionality yet.', description: 'For demonstrative purposes only', variant: 'destructive' }) },
+              { icon: SignOut, text: "EXIT", onClick: () => toast({ title: 'No exit functionality yet.', description: 'For demonstrative purposes only.', variant: 'destructive' }) },
+              { icon: HouseSimple, text: "CHANGE ROOM", onClick: () => toast({ title: 'No change room functionality yet.', description: 'For demonstrative purposes only.', variant: 'destructive' }) },
               { icon: Pause, text: "VIEWS", onClick: () => setViewing(true) },
               { icon: ShareNetwork, text: `${copied ? 'COPIED' : 'SHARE'}`, onClick: () => setCopied(true) },
             ]
