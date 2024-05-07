@@ -1,15 +1,17 @@
 import { FC, useEffect, useState } from "react";
 import { Room } from "../App";
-import { motion, AnimatePresence, useAnimation, MotionValue, useAnimate, useAnimationControls } from "framer-motion";
+import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
 import { MAX_BLUR, SPRING_OPTIONS, VIEW_SCALE } from "../constants";
 import CircularButton from "./CircularButton";
 import { Copy, Heart, ShareNetwork, X } from "@phosphor-icons/react";
 import Descriptors from "./Descriptors";
-import Button from "./Button";
 import { v4 as uuid } from 'uuid';
 import { FaHeart } from 'react-icons/fa';
 import useRoomsContext from "../hooks/useRoomsContext";
 import clamp from "lodash.clamp";
+import ButtonExpander from "./ButtonExpander";
+import ButtonStrip from "./ButtonStrip";
+import { Plus } from "@phosphor-icons/react";
 
 export type ViewProps = {
     room: Room;
@@ -109,33 +111,56 @@ const View: FC<ViewProps> = ({ room, i }) => {
                                 wall={room.wall}
                                 floor={room.floor}
                             />
-                            <motion.div className="flex gap-2" layout layoutRoot>
-                                {/* LayoutRoot prevents button jumping */}
-                                <Button
-                                    onClick={() => setCopied(true)}
-                                    text={`${copied ? 'COPIED' : 'SHARE'}`}
-                                    icon={ShareNetwork}
+                            <div className="block md:hidden">
+                                <ButtonExpander buttons={[
+                                    { icon: ShareNetwork, text: `${copied ? 'COPIED' : 'SHARE'}`, onClick: () => setCopied(true) },
+                                    { icon: Heart, text: 'FAVOURITE', onClick: () => setRooms(prev => [...prev.slice(0, i), { ...room, favourited: !room.favourited }, ...prev.slice(i + 1)]) },
+                                    { icon: Copy, text: 'DUPLICATE', onClick: () => { setRooms(prev => [...prev.slice(0, i + 1), { ...room, id: uuid() }, ...prev.slice(i + 1)]); setImgIndex(prev => prev + 1); } },
+                                ]} />
+                            </div>
+                            <div className="hidden md:block">
+                                <ButtonStrip
+                                    buttons={[
+                                        { onClick: () => setCopied(true), text: `${copied ? 'COPIED' : 'SHARE'}`, icon: ShareNetwork, },
+                                        { onClick: () => setRooms(prev => [...prev.slice(0, i), { ...room, favourited: !room.favourited }, ...prev.slice(i + 1)]), text: "FAVOURITE", icon: Heart },
+                                        {
+                                            onClick: () => {
+                                                setRooms(prev => [...prev.slice(0, i + 1), { ...room, id: uuid() }, ...prev.slice(i + 1)])
+                                                setImgIndex(prev => prev + 1);
+                                            },
+                                            text: "DUPLICATE",
+                                            icon: Copy
+                                        }
+                                    ]}
                                 />
-                                <Button
-                                    onClick={() => setRooms(prev => [...prev.slice(0, i), { ...room, favourited: !room.favourited }, ...prev.slice(i + 1)])}
-                                    text="FAVOURITE"
-                                    icon={Heart}
-                                />
-                                <Button
-                                    onClick={() => {
-                                        setRooms(prev => [...prev.slice(0, i + 1), { ...room, id: uuid() }, ...prev.slice(i + 1)])
-                                        setImgIndex(prev => prev + 1);
-                                    }}
-                                    text="DUPLICATE"
-                                    icon={Copy}
-                                />
-                            </motion.div>
+                            </div>
                         </motion.div>
                     </motion.div>
+
+                    <AnimatePresence>
+                        {i === rooms.length - 1 && viewing && (
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                                style={{ width: width * (1 - VIEW_SCALE) * (width <= 750 ? 1 : 0.5), pointerEvents: viewing ? 'auto' : 'none' }}
+                                className="absolute top-0 bottom-0 right-0 flex justify-center items-center z-[-1]"
+                            >
+                                <CircularButton
+                                    icon={Plus}
+                                    iconColor="white"
+                                    onClick={() => console.log('test')}
+                                    className={`${width < 750 && '-translate-x-full'} absolute z-10`}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
             )}
         </AnimatePresence>
     )
 }
+
+
 
 export default View;

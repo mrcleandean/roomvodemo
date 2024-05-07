@@ -7,11 +7,20 @@ import img6 from './assets/img6.jpeg';
 import { v4 as uuid } from 'uuid';
 import { type Room } from './App';
 
+
+// Application calculations
 export const VIEW_SCALE = 0.8; // The scale of the image when in view mode
 export const DRAG_FACTOR = 4; // The fraction of the screen that must be dragged before an animation is triggered
 export const MAX_BLUR = 15; // Max px value to blur when dragging
 export const COPY_TIMEOUT = 1750 // Time in ms we want to displayed copied text when pressing the share button
 export const SPRING_OPTIONS = { mass: 1, tension: 170, friction: 26 }; // Mimics react-springs default config
+
+// Application styles
+export const COLORS = {
+
+}
+
+// Demo data
 export const pages: Room[] = [
     {
         id: uuid(),
