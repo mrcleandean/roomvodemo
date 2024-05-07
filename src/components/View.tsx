@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Room } from "../App";
 import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
-import { ADD_MEDIA_Q, IMAGE_JUMP, MAX_BLUR, SPRING_OPTIONS, VIEW_SCALE } from "../constants";
+import { ADD_MEDIA_Q, IMAGE_JUMP, MAX_BLUR, SPRING_OPTIONS, VIEW_RADIUS, VIEW_SCALE } from "../constants";
 import CircularButton from "./CircularButton";
 import { Copy, Heart, ShareNetwork, X } from "@phosphor-icons/react";
 import Descriptors from "./Descriptors";
@@ -69,7 +69,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
                         style={{ backgroundImage: `url(${room.src})` }}
                         className="w-full h-full relative shadow-md md:shadow-xl shadow-gray-700 bg-cover bg-center flex justify-between"
                         initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: viewing ? VIEW_SCALE : 1, borderRadius: !viewing ? '0px' : '20px', opacity: 1 }}
+                        animate={{ scale: viewing ? VIEW_SCALE : 1, borderRadius: !viewing ? '0px' : VIEW_RADIUS, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}
                         transition={SPRING_OPTIONS}
                     >
@@ -78,7 +78,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
                             className="absolute inset-0"
                             animate={backdropControls}
                             transition={SPRING_OPTIONS}
-                            style={{ backdropFilter: `blur(${MAX_BLUR}px)`, borderRadius: '20px' }}
+                            style={{ backdropFilter: `blur(${MAX_BLUR}px)`, borderRadius: VIEW_RADIUS }}
                         />
                         <AnimatePresence>
                             {viewing && room.favourited && (
