@@ -24,7 +24,9 @@ const View: FC<ViewProps> = ({ room, i }) => {
     const offsetControls = useAnimationControls();
     const backdropControls = useAnimationControls();
     const iOffset = i - imgIndex;
-    const viewingX = (iOffset * width) * (1 - (1 - VIEW_SCALE) * 0.75);
+    const marginX = width * (1 - VIEW_SCALE) * 0.5; // The amount of space on the sides of the image when in view mode
+    const marginY = height * (1 - VIEW_SCALE) * 0.5; // The amount of space on the top and bottom of the image when in view mode
+    const viewingX = iOffset * (width - marginX * 1.5);
     const regularX = iOffset * width;
 
     useEffect(() => {
@@ -45,7 +47,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
         }))
     }, [viewing, width]);
 
-    if (Math.abs(iOffset) > 2) return null;
+    if (Math.abs(iOffset) > 2) return null; // peroformance optimization to avoid animating offscreen images
 
     return (
         <AnimatePresence
@@ -100,7 +102,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
                         </AnimatePresence>
                         <motion.div
                             // We're undoing the scale here since we want the buttons to be full size and the parent is scaled down
-                            style={{ scale: 1 / VIEW_SCALE, height: height * (1 - VIEW_SCALE) * 0.5, width: width * VIEW_SCALE, translateY: height * (1 - VIEW_SCALE) * 0.5 }}
+                            style={{ scale: 1 / VIEW_SCALE, height: marginY, width: width * VIEW_SCALE, translateY: marginY }}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: viewing && imgIndex === i ? 1 : 0 }}
                             exit={{ opacity: 0 }}
@@ -141,7 +143,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
                         {i === rooms.length - 1 && viewing && (
                             <motion.div
                                 className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[-1]"
-                                style={{ width: width * (1 - VIEW_SCALE) * 0.5, translateX: width <= ADD_MEDIA_Q ? -width * (1 - VIEW_SCALE) * 0.25 : 0 }}
+                                style={{ width: marginX, translateX: width <= ADD_MEDIA_Q ? -marginX * 0.5 : 0 }}
                             >
                                 <AddButton className="absolute z-50" />
                             </motion.div>
