@@ -16,7 +16,6 @@ const ButtonExpander: FC<{ buttons: ButtonProps[] }> = ({ buttons }) => {
             <Button
                 layout={false}
                 icon={ArrowsOut}
-                text={expanded ? '' : 'EXPAND'}
                 onClick={() => setExpanded(prev => !prev)}
                 className={expanded ? 'text-[#373C40]' : 'text-white'}
                 bgClassName={expanded ? 'bg-[#D1D4DE] opacity-100' : 'bg-black'}

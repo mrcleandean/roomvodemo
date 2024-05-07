@@ -26,7 +26,7 @@ const Button: FC<ButtonProps> = ({
       layout={layout}
       onClick={onClick}
       className={cn(
-        "relative h-[40px] rounded-[12px] py-[16px] px-[12px] overflow-hidden text-white hover:text-[#373C40] flex items-center gap-2 transition-all duration-200 font-inter font-medium",
+        "relative h-[40px] rounded-[12px] py-[16px] px-[12px] overflow-hidden text-white sm:hover:text-[#373C40] flex items-center gap-2 transition-all duration-200 font-inter font-medium",
         className
       )}
     >
@@ -40,7 +40,7 @@ const Button: FC<ButtonProps> = ({
       )}
       <div
         className={cn(
-          "z-0 absolute inset-0 opacity-35 hover:opacity-100 bg-black hover:bg-[#D1D4DE] transition-all duration-200",
+          "z-0 absolute inset-0 opacity-35 sm:hover:opacity-100 bg-black sm:hover:bg-[#D1D4DE] transition-all duration-200",
           bgClassName
         )}
       />

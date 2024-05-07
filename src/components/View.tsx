@@ -56,10 +56,11 @@ const View: FC<ViewProps> = ({ room, i }) => {
         >
             {!deleted && (
                 <motion.div
-                    style={{ zIndex: iOffset === 0 ? 1 : 0 }} // To prevent buttons from losing clickability when scale margins overlap
+                    // To prevent buttons from losing clickability when scale margins overlap, height must also be explicitly set to respond to mobile address bar
+                    style={{ zIndex: iOffset === 0 ? 1 : 0, height }}
                     initial={{ x: viewing ? viewingX : regularX }}
                     animate={offsetControls}
-                    className="absolute h-screen w-screen object-cover translate-y-full origin-left will-change-transform"
+                    className="fixed w-screen object-cover translate-y-full origin-left will-change-transform"
                     transition={SPRING_OPTIONS}
                 >
                     <motion.div

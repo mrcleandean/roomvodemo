@@ -53,51 +53,54 @@ const App = () => {
   }
 
   return (
-    <div ref={ref} className="relative h-full w-full overflow-hidden bg-gradient-to-r from-[#464C51] to-[#505860]">
-      <ButtonPanel
-        buttons={
-          viewing ? (
-            [
-              { icon: Check, text: 'DONE', onClick: () => setViewing(false) }
-            ]
-          ) : (
-            [
-              { icon: SignOut, text: "EXIT", onClick: () => toast({ title: 'No exit functionality yet.', description: 'For demonstrative purposes only.', variant: 'destructive' }) },
-              { icon: HouseSimple, text: "CHANGE ROOM", onClick: () => toast({ title: 'No change room functionality yet.', description: 'For demonstrative purposes only.', variant: 'destructive' }) },
-              { icon: Pause, text: "VIEWS", onClick: () => setViewing(true) },
-              { icon: ShareNetwork, text: `${copied ? 'COPIED' : 'SHARE'}`, onClick: () => setCopied(true) },
-            ]
-          )}
-      />
-      {rooms.length > 0 ? (
-        <motion.div
-          drag="x"
-          dragListener={viewing}
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.175}
-          onDrag={onDrag}
-          onDragEnd={onDragEnd}
-          style={{ x }}
-          className="active:cursor-grabbing touch-none origin-right"
-        >
-          {rooms.map((room, i) => (
-            <View
-              key={room.id}
-              room={room}
-              i={i}
-            />
-          ))}
-        </motion.div>
-      ) : (
-        <div className="absolute inset-0 flex justify-center items-center">
-          <div className="flex flex-col gap-1 justify-center items-center">
-            <h1 className="text-white text-center mt-8">No rooms yet</h1>
-            <AddButton />
+    <>
+      <div ref={ref} className="fixed h-full w-full overflow-hidden bg-gradient-to-r from-[#464C51] to-[#505860]">
+        <ButtonPanel
+          buttons={
+            viewing ? (
+              [
+                { icon: Check, text: 'DONE', onClick: () => setViewing(false) }
+              ]
+            ) : (
+              [
+                { icon: SignOut, text: "EXIT", onClick: () => toast({ title: 'No exit functionality yet.', description: 'For demonstrative purposes only.', variant: 'destructive' }) },
+                { icon: HouseSimple, text: "CHANGE ROOM", onClick: () => toast({ title: 'No change room functionality yet.', description: 'For demonstrative purposes only.', variant: 'destructive' }) },
+                { icon: Pause, text: "VIEWS", onClick: () => setViewing(true) },
+                { icon: ShareNetwork, text: `${copied ? 'COPIED' : 'SHARE'}`, onClick: () => setCopied(true) },
+              ]
+            )}
+        />
+        {rooms.length > 0 ? (
+          <motion.div
+            drag="x"
+            dragListener={viewing}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.175}
+            onDrag={onDrag}
+            onDragEnd={onDragEnd}
+            style={{ x }}
+            className="active:cursor-grabbing touch-none origin-right"
+          >
+            {rooms.map((room, i) => (
+              <View
+                key={room.id}
+                room={room}
+                i={i}
+              />
+            ))}
+          </motion.div>
+        ) : (
+          <div className="absolute inset-0 flex justify-center items-center">
+            <div className="flex flex-col gap-1 justify-center items-center">
+              <h1 className="text-white text-center mt-8">No rooms yet</h1>
+              <AddButton />
+            </div>
           </div>
-        </div>
-      )}
-      <GradientEdges />
-    </div >
+        )}
+        <GradientEdges />
+      </div>
+      <span className="absolute top-[101vh] h-1 w-1" /> {/* This is a hack to allow the mobile browser address bar to minimize on scroll */}
+    </>
   );
 };
 
