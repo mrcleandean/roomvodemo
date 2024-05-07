@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import axios, { AxiosError } from "axios";
 import useRoomsContext from "@/hooks/useRoomsContext";
 import { useDebouncedCallback } from 'use-debounce';
@@ -23,7 +23,11 @@ export type RandomImage = {
     };
 };
 
-const AddButton = () => {
+type AddButtonProps = {
+    className?: string;
+}
+
+const AddButton: FC<AddButtonProps> = ({ className = '' }) => {
     const { rooms, setRooms, setImgIndex, noEnvIndex, setNoEnvIndex } = useRoomsContext();
     const [pending, setPending] = useState(false);
 
@@ -72,7 +76,7 @@ const AddButton = () => {
             iconColor="white"
             onClick={getImage}
             pending={pending}
-            className="absolute"
+            className={className}
         />
     )
 }

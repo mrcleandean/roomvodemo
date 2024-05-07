@@ -143,7 +143,7 @@ const View: FC<ViewProps> = ({ room, i }) => {
                                 className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[1]"
                                 style={{ width: width * (1 - VIEW_SCALE) * 0.5, translateX: width <= 767 ? -width * (1 - VIEW_SCALE) * 0.25 : 0 }}
                             >
-                                <AddButton />
+                                <AddButton className="absolute" />
                             </motion.div>
                         )}
                     </AnimatePresence>
