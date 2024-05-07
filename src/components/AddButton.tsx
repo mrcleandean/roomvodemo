@@ -72,6 +72,7 @@ const AddButton = () => {
             iconColor="white"
             onClick={getImage}
             pending={pending}
+            className="absolute"
         />
     )
 }

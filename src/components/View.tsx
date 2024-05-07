@@ -137,14 +137,16 @@ const View: FC<ViewProps> = ({ room, i }) => {
                             </div>
                         </motion.div>
                     </motion.div>
-                    {i === rooms.length - 1 && viewing && (
-                        <div
-                            className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[1]"
-                            style={{ width: width * (1 - VIEW_SCALE) * 0.5 }}
-                        >
-                            <AddButton />
-                        </div>
-                    )}
+                    <AnimatePresence>
+                        {i === rooms.length - 1 && viewing && (
+                            <motion.div
+                                className="absolute right-0 top-0 bottom-0 flex justify-center items-center z-[1]"
+                                style={{ width: width * (1 - VIEW_SCALE) * 0.5, translateX: width <= 767 ? -width * (1 - VIEW_SCALE) * 0.25 : 0 }}
+                            >
+                                <AddButton />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div >
             )}
         </AnimatePresence >
