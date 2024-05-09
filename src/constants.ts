@@ -16,6 +16,9 @@ export const IMAGE_JUMP = 1.015; // The scale of the image when jumping to the n
 export const VIEW_RADIUS = '18px'; // The border radius of the image when in view mode (needs to be a px string)
 export const ADD_MEDIA_Q = 767; // The breakpoint for the add button to shift left on the last image (small devices)
 export const COPY_TIMEOUT = 1750 // Time in ms we want to displayed copied text when pressing the share button
+export const DRAG_ELASTICITY = 0.175; // The elasticity of the carousel when dragging/transitioning
+
+// Spring configuration(s)
 export const SPRING_OPTIONS = { mass: 1, tension: 170, friction: 26 }; // Mimics react-springs default config
 
 // Demo data

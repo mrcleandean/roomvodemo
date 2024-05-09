@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction, createContext, useContext } from "react";
 import { Room } from "../App";
 
+// Actual provider with behaviour and state in src/components/RoomsContextProvider.tsx
+
 export const RoomsContext = createContext<{
     rooms: Room[];
     setRooms: Dispatch<SetStateAction<Room[]>>;

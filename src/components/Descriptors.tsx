@@ -8,8 +8,7 @@ export type DescriptorsProps = {
 
 const Descriptors: FC<DescriptorsProps> = ({ title, floor, wall }) => {
     return (
-        <div
-            className="flex flex-col">
+        <div className="flex flex-col">
             <h3 className='text-[12px] leading-[20px] font-bold tracking-[0.5px]'>{title}</h3>
             <div className='flex flex-col gap-0 sm:flex-row sm:gap-[35px]'>
                 <p className='font-medium text-[12px] leading-[15px] sm:leading-[20px] tracking-[0.5px]'>{floor}</p>

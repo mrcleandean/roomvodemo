@@ -8,6 +8,8 @@ import {
 } from "./Toast"
 import { useToast } from "@/hooks/useToast"
 
+// Downloaded from ShadCN
+
 export function Toaster() {
   const { toasts } = useToast()
 

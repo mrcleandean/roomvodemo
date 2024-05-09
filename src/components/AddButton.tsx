@@ -23,7 +23,7 @@ export type RandomImage = {
     };
 };
 
-type AddButtonProps = {
+export type AddButtonProps = {
     className?: string;
 }
 
@@ -31,14 +31,14 @@ const AddButton: FC<AddButtonProps> = ({ className = '' }) => {
     const { rooms, setRooms, setImgIndex, noEnvIndex, setNoEnvIndex } = useRoomsContext();
     const [pending, setPending] = useState(false);
 
-    const getImage = useDebouncedCallback(async () => {
+    const getImage = useDebouncedCallback(async () => { // debounced to prevent api spamming
         if (pending) return;
         const loader = new Image();
         try {
             setPending(true);
             const { data: img } = (await axios.get(
                 `https://api.unsplash.com/photos/random/?client_id=${import.meta.env.VITE_UNSPLASH_ACCESS_KEY}`,
-            )) as { data: RandomImage };
+            )) as { data: RandomImage }; // If this throws an error (no Unplash access key), a preloaded image will be used instead
             const newRoom: Room = {
                 id: uuid(),
                 src: img.urls.full,

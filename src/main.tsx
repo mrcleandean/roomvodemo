@@ -7,7 +7,6 @@ import { Toaster } from './components/ui/Toaster.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* actual user data would be passed in here */}
     <RoomsContextProvider>
       <App />
       <Toaster />

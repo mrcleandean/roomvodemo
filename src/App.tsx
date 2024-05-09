@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { PanInfo, motion, useMotionValue } from "framer-motion";
 import { Check, HouseSimple, Pause, ShareNetwork, SignOut } from "@phosphor-icons/react";
 import ButtonPanel from "./components/ButtonPanel";
-import { DRAG_FACTOR } from "./constants";
+import { DRAG_ELASTICITY, DRAG_FACTOR } from "./constants";
 import View from "./components/View";
 import useMeasure from 'react-use-measure';
 import useRoomsContext from "./hooks/useRoomsContext";
@@ -31,7 +31,7 @@ const App = () => {
   const { toast } = useToast();
   const [ref, { width, height }] = useMeasure();
   const x = useMotionValue(0);
-  const canDrag = useRef(true);
+  const canDrag = useRef(true); // Framer-Motion doesn't provide built in drag cancel functionality
 
   useEffect(() => {
     setWidth(width)
@@ -54,6 +54,7 @@ const App = () => {
 
   return (
     <>
+      {/* Ref parent automatically sets the global width and height from within RoomsContextProvider */}
       <div ref={ref} className="fixed h-full w-full overflow-hidden bg-gradient-to-r from-[#464C51] to-[#505860]">
         <ButtonPanel
           buttons={
@@ -75,7 +76,7 @@ const App = () => {
             drag="x"
             dragListener={viewing}
             dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.175}
+            dragElastic={DRAG_ELASTICITY}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             style={{ x }}
@@ -99,7 +100,7 @@ const App = () => {
         )}
         <GradientEdges />
       </div>
-      <span className="absolute top-[101vh] h-1 w-1" /> {/* This is a hack to allow the mobile browser address bar to minimize on scroll */}
+      <span className="absolute top-[101vh] h-1 w-1" /> {/* allows a small amount of scrolling to minimize address bar on mobile browsers */}
     </>
   );
 };

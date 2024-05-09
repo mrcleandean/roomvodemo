@@ -20,41 +20,41 @@ export type ViewProps = {
 
 const View: FC<ViewProps> = ({ room, i }) => {
     const { rooms, setRooms, imgIndex, setImgIndex, viewing, width, height, copied, setCopied } = useRoomsContext();
-    const [deleted, setDeleted] = useState(false);
+    const [deleted, setDeleted] = useState(false); // triggers delete animation if set to true
     const offsetControls = useAnimationControls();
     const backdropControls = useAnimationControls();
-    const iOffset = i - imgIndex;
+    const iOffset = i - imgIndex; // The index relative to the one being viewed
     const marginX = width * (1 - VIEW_SCALE) * 0.5; // The amount of space on the sides of the image when in view mode
     const marginY = height * (1 - VIEW_SCALE) * 0.5; // The amount of space on the top and bottom of the image when in view mode
-    const viewingX = iOffset * (width - marginX * 1.5);
-    const regularX = iOffset * width;
+    const viewingX = iOffset * (width - marginX * 1.5); // The x val for view mode
+    const regularX = iOffset * width; // The x val for regular mode
 
     useEffect(() => {
-        if (Math.abs(iOffset) > 2) return
-        offsetControls.start(({
+        if (Math.abs(iOffset) > 2) return // performance optimization to avoid animating offscreen images
+        offsetControls.start(({ // animates the x value
             x: viewingX,
             scale: viewing ? [1, IMAGE_JUMP, 1] : 1
         }));
-        backdropControls.start({
+        backdropControls.start({ // animates the backdrop filter opacity to dislay a blur effect
             opacity: [0, 1, 0]
         });
-    }, [rooms.length, imgIndex]);
+    }, [rooms.length, imgIndex]); // runs when adding, deleting, or dragging to next/prev
 
     useEffect(() => {
         if (Math.abs(iOffset) > 2) return
         offsetControls.start(({
             x: viewing ? viewingX : regularX,
         }))
-    }, [viewing, width]);
+    }, [viewing, width]); // runs when resizing or toggling view mode
 
-    if (Math.abs(iOffset) > 2) return null; // peroformance optimization to avoid animating offscreen images
+    if (Math.abs(iOffset) > 2) return null; // peroformance optimization to avoid rendering offscreen images
 
     return (
         <AnimatePresence
             onExitComplete={() => {
                 setImgIndex(prev => clamp(prev - 1, 0, rooms.length - 1));
                 setRooms((prev) => prev.filter(r => r.id !== room.id));
-            }}
+            }} // runs after delete animation is completed
         >
             {!deleted && (
                 <motion.div
@@ -154,6 +154,5 @@ const View: FC<ViewProps> = ({ room, i }) => {
         </AnimatePresence>
     )
 }
-
 
 export default View;
