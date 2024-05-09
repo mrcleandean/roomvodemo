@@ -86,7 +86,6 @@ body,
   height: 100vh;
   color: white;
   background-color: rgb(53, 53, 53);
-  scrollbar-color: transparent transparent;
 }
 
 /* Position fixed on the root elements allows responsivity with mobile view browser bar */
