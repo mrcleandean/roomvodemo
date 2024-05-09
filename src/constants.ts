@@ -18,11 +18,6 @@ export const ADD_MEDIA_Q = 767; // The breakpoint for the add button to shift le
 export const COPY_TIMEOUT = 1750 // Time in ms we want to displayed copied text when pressing the share button
 export const SPRING_OPTIONS = { mass: 1, tension: 170, friction: 26 }; // Mimics react-springs default config
 
-// Application styles
-export const COLORS = {
-
-}
-
 // Demo data
 export const pages: Room[] = [
     {
